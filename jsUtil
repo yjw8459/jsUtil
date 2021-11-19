@@ -2,7 +2,11 @@ let dataUtil = {
 	masterData : null,
 	detailData : null,
 	get getMasterData() { return dataUtil.masterData[$('#masterGrid tbody .table-info').index()]; },
-	get getDetailData() { return dataUtil.detailData[$('#detailGrid tbody .table-info').index()]; }
+	get getDetailData() { return dataUtil.detailData[$('#detailGrid tbody .table-info').index()]; },
+	set insertMasterData(v) { 
+		if( this.masterData === null ) this.masterData = v;
+		else						   this.masterData.push(v);
+	}
 };
 
 const MASTER_TR = '#masterGrid tbody tr';
@@ -43,6 +47,21 @@ function fn_initializeTime(className, separator){
 	$('.' + className).mask('00' + separator + '00');
 }
 
+function fn_commonCheck(name, type, value, isChecked){
+	if ( isChecked ) {
+		$('input[name=' + name + '][type=' + type + ']').each(function(){
+			if ( value === $(this).val() ) {
+				$(this).prop('checked', isChecked);
+				return false;
+			}
+		});
+	}
+	else {
+		$('input[name=' + name + '][type=' + type + ']').each(function(){
+			$(this).prop('checked', isChecked);
+		});
+	}
+}
 
 
 /** 태그 위에 Form으로 감싸서 serializeObject
@@ -123,7 +142,7 @@ function fn_getCallback(division, callback){
 }
 
 function fn_commonInsertRow(selector, repeat){
-	let rowCnt = $(selector).length;
+	let rowCnt = $(selector + ' tbody tr').length;
 	let selectedCnt  = $(selector + ' .table-info').length;
 	let idx = selectedCnt < 1 ? rowCnt : rowCnt + selectedCnt; 
 	let html = '';
