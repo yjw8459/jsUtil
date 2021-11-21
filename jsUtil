@@ -4,7 +4,7 @@ let dataUtil = {
 	get getMasterData() { return dataUtil.masterData[$('#masterGrid tbody .table-info').index()]; },
 	get getDetailData() { return dataUtil.detailData[$('#detailGrid tbody .table-info').index()]; },
 	set insertMasterData(v) { 
-		if( this.masterData === null ) this.masterData = v;
+		if( this.masterData === null ) this.masterData = [v];
 		else						   this.masterData.push(v);
 	}
 };
@@ -154,15 +154,6 @@ function fn_commonInsertRow(selector, repeat){
 	html += '	<input class="status" value="I">';
 	html += '</tr>';
 	selectedCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
-}
-
-
-function fn_commonInsertCallback(data){
-	let retCode = data.retCode;
-	if ( retCode > 0 ) {
-		alert('저장되었습니다.');
-		location.reload();
-	}
 }
 
 /**
