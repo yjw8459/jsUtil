@@ -4,7 +4,7 @@ let dataUtil = {
 	get getMasterData() { return dataUtil.masterData[$('#masterGrid tbody .table-info').index()]; },
 	get getDetailData() { return dataUtil.detailData[$('#detailGrid tbody .table-info').index()]; },
 	set insertMasterData(v) { 
-		if( this.masterData === null ) this.masterData = [v];
+		if( this.masterData === null ) this.masterData = v;
 		else						   this.masterData.push(v);
 	}
 };
@@ -13,6 +13,7 @@ const MASTER_TR = '#masterGrid tbody tr';
 
 /**
  * 객체 병합
+ * 
  * @returns
  */
 function fn_mergeObject(result, data){
@@ -64,8 +65,9 @@ function fn_commonCheck(name, type, value, isChecked){
 }
 
 
-/** 태그 위에 Form으로 감싸서 serializeObject
- * 작성자 : 유종원
+/**
+ * 태그 위에 Form으로 감싸서 serializeObject 작성자 : 유종원
+ * 
  * @param $parent
  * @returns
  */
@@ -77,8 +79,8 @@ function fn_wrappingFormData($parent){
 }
 
 /**
- * 30분 1시간 단위인지 구분
- * 작성자 : 유종원
+ * 30분 1시간 단위인지 구분 작성자 : 유종원
+ * 
  * @param value
  * @param separator
  * @returns
@@ -96,6 +98,7 @@ function fn_checkMinute(value, separator){
 
 /**
  * 체크박스 리스트를 받아서 체크된 값의 리스트 반환
+ * 
  * @returns
  */
 function fn_isChecked_returnArray($checkList){
@@ -156,9 +159,19 @@ function fn_commonInsertRow(selector, repeat){
 	selectedCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
 }
 
+
+function fn_commonInsertCallback(data){
+	let retCode = data.retCode;
+	if ( retCode > 0 ) {
+		alert('저장되었습니다.');
+		location.reload();
+	}
+}
+
 /**
  * 
  * 객체가 비어있을 경우 Return true
+ * 
  * @param obj
  * @returns
  */
@@ -181,6 +194,7 @@ function fn_copyObject(data){
 
 /**
  * 테이블 데이터 생성 Version2
+ * 
  * @returns html
  */
 function fn_makeTableRow_V2(data, properties){
@@ -194,13 +208,14 @@ function fn_makeTableRow_V2(data, properties){
 
 
 /**
- * 비어있는 경우 true Return 
+ * 비어있는 경우 true Return
+ * 
  * @param selector
  * @returns
  */
 function fn_isEmpty(selector){
-	//공백여부 체크 
-	let valueCheck = true; 		//벨리데이션 예외 체크
+	// 공백여부 체크
+	let valueCheck = true; 		// 벨리데이션 예외 체크
 	let processCheck = false;
 	$(selector).find('.required').each(function(){
 		valueCheck = fn_ElementsValidator($(this));
@@ -209,7 +224,7 @@ function fn_isEmpty(selector){
 			return false;
 		}
 	});
-	if ( ! valueCheck ) { //필수 입력 값이 비어있을 경우 break
+	if ( ! valueCheck ) { // 필수 입력 값이 비어있을 경우 break
 		processCheck = true;
 	}
 	return processCheck;
@@ -217,6 +232,7 @@ function fn_isEmpty(selector){
 
 /**
  * disabled 유무
+ * 
  * @param selector
  * @param state
  * @returns
@@ -230,6 +246,7 @@ function fn_common_initDisabled(selector, state){
 
 /**
  * 무조건 Disabled 항목 잠구기 함수
+ * 
  * @param selector
  * @returns
  */
@@ -250,6 +267,7 @@ function fn_createEmptyTableHtml(colspan){
 
 /**
  * selector와 html을 받아서 table tbody에 append
+ * 
  * @param selector
  * @param html
  * @returns
@@ -275,7 +293,7 @@ function fn_commonDateRangePickerFormat(date){
 function fn_getOneWeekAfterDate(){
 	let now = new Date();
 	now.setDate(now.getDate() + 7);
-	let afterDate = fn_commonDateRangePickerFormat(new Date(now));	//일주일 뒤
+	let afterDate = fn_commonDateRangePickerFormat(new Date(now));	// 일주일 뒤
 	return afterDate;
 }
 
@@ -293,6 +311,7 @@ function fn_commonUnCheckedByName(name){
 
 /**
  * 이벤트 대상 선택자를 받아서 기본 클릭 이벤트 리턴
+ * 
  * @param selector
  * @returns
  */
@@ -320,7 +339,7 @@ function fn_commonGetRowIndex(selector){
 
 function fn_setElementValue(selector, value){
 	let $selector = $(selector);
-	let tagName = $selector.prop('tagName');	//태그이름은 prop
+	let tagName = $selector.prop('tagName');	// 태그이름은 prop
 	if ( 'INPUT' === tagName ) {
 		let type = $selector.attr('type');
 		if ( 'text' === type || 'hidden' === type) {
@@ -380,9 +399,8 @@ function fn_commonCodeParser(code){
 
 
 /**
- * 공통 모달 사용시
- * 공통 파일 다운로드 사용 시 파일 다운로드 함수 
- * 로우 안에 파일 이름, 파일 경로가 있을 시 사용 가능
+ * 공통 모달 사용시 공통 파일 다운로드 사용 시 파일 다운로드 함수 로우 안에 파일 이름, 파일 경로가 있을 시 사용 가능
+ * 
  * @param _this
  * @returns
  */
@@ -399,9 +417,8 @@ function fn_commonDownload_v1(_this){
 }
 
 /**
- * 공통 모달 사용시
- * 공통 파일 다운로드 사용 시 파일 다운로드 함수 
- * 로우 안에 파일 이름, 파일 경로가 있을 시 사용 가능
+ * 공통 모달 사용시 공통 파일 다운로드 사용 시 파일 다운로드 함수 로우 안에 파일 이름, 파일 경로가 있을 시 사용 가능
+ * 
  * @param _this
  * @returns
  */
@@ -419,7 +436,7 @@ function fn_commonDownload_v2(_this){
 
 
 /**
- * 공통 파일 다운로드 함수 
+ * 공통 파일 다운로드 함수
  */
 function fn_commonFileDownload(name, path){
 	let form = document.createElement('form');
@@ -443,7 +460,8 @@ function fn_createElement(tagName, type, value, name){
 }
 
 /**
- * 파일 전송용 formData 
+ * 파일 전송용 formData
+ * 
  * @param formSelector
  * @param obj
  * @returns
