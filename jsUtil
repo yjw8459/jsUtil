@@ -39,6 +39,44 @@ function fn_ajaxPOST_stringify(url, data, callback, _async){
 	});
 }
 
+/**
+ * 문자열 
+ */
+
+/**
+ * 
+ * @returns
+ */
+function fn_getOneWeekAfterDate(){
+	let now = new Date();
+	now.setDate(now.getDate() + 7);
+	let afterDate = fn_commonDateRangePickerFormat(new Date(now));	// 일주일 뒤
+	return afterDate;
+}
+
+function fn_setOneWeekAfterDate(selector){
+	$(selector).val(fn_getOneWeekAfterDate());
+}
+
+
+function fn_commonUnCheckedByName(name){
+	$('input[name=' + name + ']').each(function(){
+		$(this).attr('checked', false);
+	});
+}
+
+
+/**
+ * 문자열 형식의 8자리 년월일 문자열 사이를 구분하여 Return  
+ * @param date
+ * @param separator
+ * @returns
+ */
+function fn_commonDateFormat(date, separator){
+	return date.substring(0,4) + separator 
+	+ date.substring(4,6) + separator + 
+	date.substring(6,8); 
+}
 
 function fn_initializeYearMonthDay(className, separator){
 	$('.' + className).mask('0000' + separator + '00' + separator + '00');
@@ -276,8 +314,13 @@ function fn_commonCreateTableRow(selector, html){
 	$(selector + ' tbody').html(html);
 }
 
-
-function fn_commonDateRangePickerFormat(date){
+/**
+ * date 객체를 문자열 년월일로 구분자 섞어서 Return 
+ * @param date
+ * @returns
+ */
+function fn_commonDateRangePickerFormat(date, separator){
+	if ( separator === undefined ) 	separator = '/';
 	let year = date.getFullYear();
 	let month = (1 + date.getMonth());
 	let day = date.getDate();
@@ -285,28 +328,11 @@ function fn_commonDateRangePickerFormat(date){
 	month = month >= 10 ? month : '0' + month;
 	day = day >= 10 ? day : '0' + day;
 	
-	return year + '/' + month + '/' + day;
-	
+	return year + separator + month + separator + day;
 }
 
 
-function fn_getOneWeekAfterDate(){
-	let now = new Date();
-	now.setDate(now.getDate() + 7);
-	let afterDate = fn_commonDateRangePickerFormat(new Date(now));	// 일주일 뒤
-	return afterDate;
-}
 
-function fn_setOneWeekAfterDate(selector){
-	$(selector).val(fn_getOneWeekAfterDate());
-}
-
-
-function fn_commonUnCheckedByName(name){
-	$('input[name=' + name + ']').each(function(){
-		$(this).attr('checked', false);
-	});
-}
 
 
 /**
