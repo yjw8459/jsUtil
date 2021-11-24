@@ -66,6 +66,38 @@ function fn_commonUnCheckedByName(name){
 }
 
 
+
+/**
+ * 
+ * 
+ * 날짜 관련 함수
+ * 
+ *  
+ */
+
+/**
+ * 현재 클래스 명을 받아서 datepicker를 입힌 후 클래스 이름 바꿈
+ * @param targetClass
+ * @param makeClass
+ * @returns
+ */
+function fn_useDatepicker(targetClass, makeClass){
+	$('.' + targetClass).daterangepicker({
+		singleDatePicker: true,
+		showDropdowns: true,
+		locale:	{
+			format:	'YYYY/MM/DD'
+		}
+	});
+	$('.' + targetClass).each(function(){
+		$(this).removeClass(targetClass);
+		$(this).addClass(makeClass);
+	});
+}
+
+
+
+
 /**
  * 문자열 형식의 8자리 년월일 문자열 사이를 구분하여 Return  
  * @param date
@@ -100,6 +132,41 @@ function fn_commonCheck(name, type, value, isChecked){
 			$(this).prop('checked', isChecked);
 		});
 	}
+}
+
+/**
+ * date 객체를 문자열 년월일로 구분자 섞어서 Return 
+ * @param date
+ * @returns
+ */
+function fn_commonDateRangePickerFormat(date, separator){
+	if ( separator === undefined ) 	separator = '/';
+	let year = date.getFullYear();
+	let month = (1 + date.getMonth());
+	let day = date.getDate();
+	
+	month = month >= 10 ? month : '0' + month;
+	day = day >= 10 ? day : '0' + day;
+	
+	return year + separator + month + separator + day;
+}
+
+
+/**
+ * date 객체를 문자열 년월일로 구분자 섞어서 Return 
+ * @param date
+ * @returns
+ */
+function fn_commonDateRangePickerFormat(date, separator){
+	if ( separator === undefined ) 	separator = '/';
+	let year = date.getFullYear();
+	let month = (1 + date.getMonth());
+	let day = date.getDate();
+	
+	month = month >= 10 ? month : '0' + month;
+	day = day >= 10 ? day : '0' + day;
+	
+	return year + separator + month + separator + day;
 }
 
 
@@ -182,6 +249,12 @@ function fn_getCallback(division, callback){
 	};
 }
 
+/**
+ * 빈 로우 생성
+ * @param selector
+ * @param repeat
+ * @returns
+ */
 function fn_commonInsertRow(selector, repeat){
 	let rowCnt = $(selector + ' tbody tr').length;
 	let selectedCnt  = $(selector + ' .table-info').length;
@@ -197,7 +270,23 @@ function fn_commonInsertRow(selector, repeat){
 	selectedCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
 }
 
-
+/**
+ * 로우 생성 Elements를 테이블 로우 안에 삽입
+ * @param data
+ * @returns
+ */
+function fn_commonInsertRow_V2(selector, htmlList){
+	let rowCnt = $(selector + ' tbody tr').length;
+	let html = '';
+	html += '<tr class="insertRow">';
+	for (var i = 0; i < htmlList.length; i++) {
+		html += '<td>';
+		html += 	htmlList[i];
+		html += '</td>';
+	}
+	html += '</tr>';
+	rowCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
+}
 function fn_commonInsertCallback(data){
 	let retCode = data.retCode;
 	if ( retCode > 0 ) {
@@ -223,6 +312,15 @@ function fn_objValidator(obj){
 	return result;
 }
 
+/**
+ * 
+ * @param data
+ * @returns
+ */
+function fn_objCheck(data){
+	if ( data === null || data === undefined ) return {};
+	return data;
+}
 
 function fn_copyObject(data){
 	let result = {};
@@ -266,6 +364,23 @@ function fn_isEmpty(selector){
 		processCheck = true;
 	}
 	return processCheck;
+}
+
+
+/**
+ * 클래스 네임을 가진 타겟 중 값이 비어있는지 체크 
+ * @param targetClass
+ * @returns
+ */
+function fn_inEmptyTarget(targetClass){
+	let result = true;
+	$('.' + targetClass).each(function(){
+		if ( $(this).val() === '' || $(this).val() === undefined ){
+			result = false;
+			return false;
+		} 
+	});
+	return result;
 }
 
 /**
@@ -314,22 +429,24 @@ function fn_commonCreateTableRow(selector, html){
 	$(selector + ' tbody').html(html);
 }
 
-/**
- * date 객체를 문자열 년월일로 구분자 섞어서 Return 
- * @param date
- * @returns
- */
-function fn_commonDateRangePickerFormat(date, separator){
-	if ( separator === undefined ) 	separator = '/';
-	let year = date.getFullYear();
-	let month = (1 + date.getMonth());
-	let day = date.getDate();
-	
-	month = month >= 10 ? month : '0' + month;
-	day = day >= 10 ? day : '0' + day;
-	
-	return year + separator + month + separator + day;
+function fn_switchElement(className, showTable){
+	let targetIdArray = fn_getIdListByClassName(className);
+	for (let i= 0;  i< targetIdArray.length;  i++) {
+		$('#' + targetIdArray[i]).css('display', 'none');
+	}
+	$('#' + showTable).css('display', '');
 }
+
+
+function fn_getIdListByClassName(className){
+	let array = new Array();
+	$('.' + className).each(function(){
+		array.push($(this).attr('id'));
+	});
+	console.log(array);
+	return array;
+}
+
 
 
 
@@ -356,6 +473,20 @@ function fn_setClickEvent(selector, callback){
 
 function fn_setdblClickEvent(selector, callback){
 	$(selector).dblclick(fn_createBasicClickEvent(selector, callback));
+}
+
+function fn_setAddUpdateClass(className, tagArr, callback){
+	for (var i = 0; i < tagArr.length; i++) {
+		$(className + ' ' + tagArr[i]).change(fn_addUpdateClass(callback));
+	}
+}
+
+function fn_addUpdateClass(callback){
+	return function(){
+		let $tr = $(this).closest('tr');
+		$tr.addClass('update');
+		if ( callback !== undefined ) 	callback();
+	}
 }
 
 function fn_commonGetRowIndex(selector){
