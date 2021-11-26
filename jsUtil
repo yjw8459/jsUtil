@@ -1,4 +1,9 @@
-let dataUtil = {
+/**
+ * 데이터 VO
+ * 
+ */
+
+ let dataUtil = {
 	masterData : null,
 	detailData : null,
 	get getMasterData() { return dataUtil.masterData[$('#masterGrid tbody .table-info').index()]; },
@@ -9,20 +14,24 @@ let dataUtil = {
 	}
 };
 
+/**
+ * 공통 선택자
+ */
 const MASTER_TR = '#masterGrid tbody tr';
 
+
 /**
- * 객체 병합
- * 
+ * ajax 공통 
+ */
+
+/**
+ * JSON 문자열 전송 
+ * @param url
+ * @param data
+ * @param callback
+ * @param _async
  * @returns
  */
-function fn_mergeObject(result, data){
-	for ( let property in data) {
-		result[property] = data[property];
-	}
-	return result;
-}
-
 function fn_ajaxPOST_stringify(url, data, callback, _async){
 	if ( _async === undefined ) _async = true;
 	$.ajax({
@@ -38,6 +47,10 @@ function fn_ajaxPOST_stringify(url, data, callback, _async){
 	   ,error : function(x, e) { fn_ajaxError(x, e); }
 	});
 }
+
+
+
+
 
 /**
  * 문자열 
@@ -76,6 +89,11 @@ function fn_commonUnCheckedByName(name){
  */
 
 /**
+ * datepicker
+ * 데이트피커
+ */
+
+/**
  * 현재 클래스 명을 받아서 datepicker를 입힌 후 클래스 이름 바꿈
  * @param targetClass
  * @param makeClass
@@ -96,11 +114,32 @@ function fn_useDatepicker(targetClass, makeClass){
 }
 
 
+/**
+ * date 객체를 문자열 년월일로 구분자 섞어서 Return 
+ * @param date
+ * @returns
+ */
+function fn_commonDateRangePickerFormat(date, separator){
+	if ( separator === undefined ) 	separator = '/';
+	let year = date.getFullYear();
+	let month = (1 + date.getMonth());
+	let day = date.getDate();
+	
+	month = month >= 10 ? month : '0' + month;
+	day = day >= 10 ? day : '0' + day;
+	
+	return year + separator + month + separator + day;
+}
+
 
 
 /**
+ * dateString 날짜포맷
+ */
+
+/**
  * 문자열 형식의 8자리 년월일 문자열 사이를 구분하여 Return  
- * @param date
+ * @param date(문자열)
  * @param separator
  * @returns
  */
@@ -110,78 +149,58 @@ function fn_commonDateFormat(date, separator){
 	date.substring(6,8); 
 }
 
+
+/**
+ * date 객체를 문자열 년월일로 구분자 섞어서 Return 
+ * @param date(new Date())
+ * @returns
+ */
+function fn_commonDateRangePickerFormat(date, separator){
+	if ( separator === undefined ) 	separator = '/';
+	let year = date.getFullYear();
+	let month = (1 + date.getMonth());
+	let day = date.getDate();
+	
+	month = month >= 10 ? month : '0' + month;
+	day = day >= 10 ? day : '0' + day;
+	
+	return year + separator + month + separator + day;
+}
+
+
+
+/**
+ * date mask (날짜 마스크)
+ */
+
+/**
+ * 년/월/일 마스크
+ * @param className
+ * @param separator
+ * @returns
+ */
 function fn_initializeYearMonthDay(className, separator){
 	$('.' + className).mask('0000' + separator + '00' + separator + '00');
 }
+
+/**
+ * 시/분 마스크
+ * @param className
+ * @param separator
+ * @returns
+ */
 
 function fn_initializeTime(className, separator){
 	$('.' + className).mask('00' + separator + '00');
 }
 
-function fn_commonCheck(name, type, value, isChecked){
-	if ( isChecked ) {
-		$('input[name=' + name + '][type=' + type + ']').each(function(){
-			if ( value === $(this).val() ) {
-				$(this).prop('checked', isChecked);
-				return false;
-			}
-		});
-	}
-	else {
-		$('input[name=' + name + '][type=' + type + ']').each(function(){
-			$(this).prop('checked', isChecked);
-		});
-	}
-}
 
-/**
- * date 객체를 문자열 년월일로 구분자 섞어서 Return 
- * @param date
- * @returns
- */
-function fn_commonDateRangePickerFormat(date, separator){
-	if ( separator === undefined ) 	separator = '/';
-	let year = date.getFullYear();
-	let month = (1 + date.getMonth());
-	let day = date.getDate();
-	
-	month = month >= 10 ? month : '0' + month;
-	day = day >= 10 ? day : '0' + day;
-	
-	return year + separator + month + separator + day;
-}
 
 
 /**
- * date 객체를 문자열 년월일로 구분자 섞어서 Return 
- * @param date
- * @returns
+ * Date Check
+ * 시간체크
  */
-function fn_commonDateRangePickerFormat(date, separator){
-	if ( separator === undefined ) 	separator = '/';
-	let year = date.getFullYear();
-	let month = (1 + date.getMonth());
-	let day = date.getDate();
-	
-	month = month >= 10 ? month : '0' + month;
-	day = day >= 10 ? day : '0' + day;
-	
-	return year + separator + month + separator + day;
-}
-
-
-/**
- * 태그 위에 Form으로 감싸서 serializeObject 작성자 : 유종원
- * 
- * @param $parent
- * @returns
- */
-function fn_wrappingFormData($parent){
-	let $form = $('<form></form>');
-	$form.append($parent);
-	let data = $form.serializeObject();
-	return data;
-}
 
 /**
  * 30분 1시간 단위인지 구분 작성자 : 유종원
@@ -202,146 +221,27 @@ function fn_checkMinute(value, separator){
 
 
 /**
- * 체크박스 리스트를 받아서 체크된 값의 리스트 반환
- * 
+ * Validator 
+ * 벨리데이터
+ * 벨리데이션
+ */
+
+/**
+ * value 값의 Element 체크 
+ * @param name
+ * @param type
+ * @param value
  * @returns
  */
-function fn_isChecked_returnArray($checkList){
-	let values = new Array();
-	$checkList.each(function(){
-		let isChecked = $(this).prop('checked');
-		if ( isChecked ) 	values.push( $(this).val() );
-	});
-	return values;
-}
-
-
-function fn_commonOpenModal(id){
-	$('#' + id).modal('show');
-}
-
-function fn_commonCloseModal(id){
-	$('#' + id).modal('hide');
-}
-
-function fn_commonTableClickEvent(tableName, callback){
-	if ( callback === undefined  ) 	callback = null;
-	return function(){
-		$('#' + tableName + ' tbody tr').attr('class', '');
-		$(this).attr('class', 'table-info');
-		if ( callback === null ) 	return false;
-		callback();
-	}
-}
-
-function fn_getCallback(division, callback){
-	let msg = '';
-	if ( division === 'delete' ) 		msg = '삭제되었습니다.';
-	else if ( division === 'insert' ) 	msg = '저장되었습니다.';
-	else if ( division === 'confirm' ) 	msg = '신청되었습니다.';
-	return function(data){
-		let retCode = data.retCode;
-		if ( retCode > 0 ) {
-			alert(msg);
-			if ( callback === undefined )	location.reload();
-			else							callback();
+function fn_commonCheck(name, type, value){
+	$('input[name=' + name + '][type=' + type + ']').each(function(){
+		if ( $(this).val() === value ) {
+			$(this).prop('checked', true);
+			return false;
 		}
-	};
-}
-
-/**
- * 빈 로우 생성
- * @param selector
- * @param repeat
- * @returns
- */
-function fn_commonInsertRow(selector, repeat){
-	let rowCnt = $(selector + ' tbody tr').length;
-	let selectedCnt  = $(selector + ' .table-info').length;
-	let idx = selectedCnt < 1 ? rowCnt : rowCnt + selectedCnt; 
-	let html = '';
-	html += '<tr class="insertRow">';
-	html += '	<td>' + (idx++) + '</td>';
-	for (var i = 0; i < repeat; i++) {
-		html += '	<td></td>';
-	}
-	html += '	<input class="status" value="I">';
-	html += '</tr>';
-	selectedCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
-}
-
-/**
- * 로우 생성 Elements를 테이블 로우 안에 삽입
- * @param data
- * @returns
- */
-function fn_commonInsertRow_V2(selector, htmlList){
-	let rowCnt = $(selector + ' tbody tr').length;
-	let html = '';
-	html += '<tr class="insertRow">';
-	for (var i = 0; i < htmlList.length; i++) {
-		html += '<td>';
-		html += 	htmlList[i];
-		html += '</td>';
-	}
-	html += '</tr>';
-	rowCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
-}
-function fn_commonInsertCallback(data){
-	let retCode = data.retCode;
-	if ( retCode > 0 ) {
-		alert('저장되었습니다.');
-		location.reload();
-	}
-}
-
-/**
- * 
- * 객체가 비어있을 경우 Return true
- * 
- * @param obj
- * @returns
- */
-function fn_objValidator(obj){
-	let result = false;
-	if ( obj === null ) 	return true;
-	for (const property in obj) {
-		let value = obj[property];
-		if ( value === '' || value === undefined )	result = true; 
-	}
-	return result;
-}
-
-/**
- * 
- * @param data
- * @returns
- */
-function fn_objCheck(data){
-	if ( data === null || data === undefined ) return {};
-	return data;
-}
-
-function fn_copyObject(data){
-	let result = {};
-	for ( let property in data) result[property] = data[property];
-	return result;
-}
-
-/**
- * 테이블 데이터 생성 Version2
- * 
- * @returns html
- */
-function fn_makeTableRow_V2(data, properties){
-	let html = '<tr>';
-	properties.forEach(function(property){
-		html += '<td>' + fn_basicValidator(data[property]) + '</td>';
+		else	$(this).prop('checked', false);
 	});
-	html += '</tr>';
-	return html;
 }
-
 
 /**
  * 비어있는 경우 true Return
@@ -368,6 +268,33 @@ function fn_isEmpty(selector){
 
 
 /**
+ * 
+ * 객체가 비어있을 경우 Return true
+ * 
+ * @param obj
+ * @returns
+ */
+function fn_objValidator(obj){
+	let result = false;
+	if ( obj === null ) 	return true;
+	for (const property in obj) {
+		let value = obj[property];
+		if ( value === '' || value === undefined )	result = true; 
+	}
+	return result;
+}
+
+/**
+ * 객체가 비어있을 경우 return new Object(); 
+ * @param data
+ * @returns
+ */
+function fn_objCheck(data){
+	if ( data === null || data === undefined ) return {};
+	return data;
+}
+
+/**
  * 클래스 네임을 가진 타겟 중 값이 비어있는지 체크 
  * @param targetClass
  * @returns
@@ -381,6 +308,145 @@ function fn_inEmptyTarget(targetClass){
 		} 
 	});
 	return result;
+}
+
+
+
+/**
+ * 객체 관련 함수
+ * 
+ */
+
+
+/**
+ * 객체 깊은 복사 for in
+ * $.extend 사용 안될 시 
+ * @param data
+ * @returns
+ */
+function fn_copyObject(data){
+	let result = {};
+	for ( let property in data) result[property] = data[property];
+	return result;
+}
+
+/**
+ * 객체 병합 합수 
+ * 첫 번째 인자에 두번 째 인자 데이터 병합 
+ * @returns
+ */
+function fn_mergeObject(result, data){
+	for ( let property in data) {
+		result[property] = data[property];
+	}
+	return result;
+}
+
+
+
+/**
+ * form선택자와 merge할 데이터를 받아서 formData로 병합
+ * 
+ * @param formSelector
+ * @param obj
+ * @returns
+ */
+function fn_commonFileFormData(formSelector, obj){
+	let form = $(formSelector)[0];
+	let data = new FormData(form);
+	
+	for ( let property in obj) 	data.append(property, obj[property]);
+	return data;
+}
+
+
+
+
+
+
+
+/**
+ * Element Control
+ * 요소 제어 
+ */
+
+
+
+/**
+ * 선택자를 받아서 값 세팅 공통 함수
+ * @param selector
+ * @param value
+ * @returns
+ */
+function fn_setElementValue(selector, value){
+	let $selector = $(selector);
+	let tagName = $selector.prop('tagName');	// 태그이름은 prop
+	if ( 'INPUT' === tagName ) {
+		let type = $selector.attr('type');
+		if ( 'text' === type || 'hidden' === type) {
+			$selector.val(value);
+		}
+		else if ( 'radio' === type ) {
+			$(selector).each(function(){
+				if ( $(this).val() === value ) {
+					$(this).prop('checked', true);
+					return false;
+				}
+			});
+		}
+	}
+	else if ( 'TEXTAREA' === tagName ) {
+		$selector.val(value);
+	}
+	else if ( 'SELECT' === tagName ) {
+		$selector.val(value).attr('selected', true);
+	}
+	return ;
+}
+
+/**
+ * 태그 정보로 요소 생성 및 반환
+ * @param tagName
+ * @param type
+ * @param value
+ * @param name
+ * @returns
+ */
+function fn_createElement(tagName, type, value, name){
+	let element = document.createElement(tagName);
+	element.type = type;
+	element.value = value;
+	element.name = name;
+	return element;
+}
+
+
+/**
+ * 태그 위에 Form으로 감싸서 serializeObject 작성자 : 유종원
+ * 
+ * @param $parent
+ * @returns
+ */
+function fn_wrappingFormData($parent){
+	let $form = $('<form></form>');
+	$form.append($parent);
+	let data = $form.serializeObject();
+	return data;
+}
+
+
+/**
+ * 체크박스 리스트를 받아서 체크된 값의 리스트 반환
+ * 
+ * @returns
+ */
+function fn_isChecked_returnArray($checkList){
+	let values = new Array();
+	$checkList.each(function(){
+		let isChecked = $(this).prop('checked');
+		if ( isChecked ) 	values.push( $(this).val() );
+	});
+	return values;
 }
 
 /**
@@ -408,6 +474,279 @@ function fn_common_initDisabled_v2(selector){
 }
 
 
+/**
+ * display none은 클래스로 제어가 안되기 때문에,
+ * ID값을 받아서 반복문 display none
+ * 
+ * 보여울 테이블도 인자 전달 받아서 스위치 기능을 한다.
+ * switch
+ * @param className
+ * @param showTable
+ * @returns
+ */
+function fn_switchElement(className, showTable){
+	let targetIdArray = fn_getIdListByClassName(className);
+	for (let i= 0;  i< targetIdArray.length;  i++) {
+		$('#' + targetIdArray[i]).css('display', 'none');
+	}
+	$('#' + showTable).css('display', '');
+}
+
+/**
+ * 클래스 이름을 받아서 클래스들의 Id값 array return
+ * @param className
+ * @returns
+ */
+function fn_getIdListByClassName(className){
+	let array = new Array();
+	$('.' + className).each(function(){
+		array.push($(this).attr('id'));
+	});
+	return array;
+}
+
+
+
+
+
+
+
+
+
+/**
+ * 모달 관련 함수 
+ */
+
+/**
+ * 모달 오픈
+ * @param id
+ * @returns
+ */
+
+function fn_commonOpenModal(id){
+	$('#' + id).modal('show');
+}
+
+function fn_commonCloseModal(id){
+	$('#' + id).modal('hide');
+}
+
+
+
+/**
+ * 이벤트 관련 함수
+ */
+
+
+/**
+ * 클릭 이벤트
+ */
+
+/**
+ * 테이블 로우 클릭 함수
+ * @param tableName
+ * @param callback
+ * @returns
+ */
+
+function fn_commonTableClickEvent(tableName, callback){
+	if ( callback === undefined  ) 	callback = null;
+	return function(){
+		$('#' + tableName + ' tbody tr').attr('class', '');
+		$(this).attr('class', 'table-info');
+		if ( callback === null ) 	return false;
+		callback();
+	}
+}
+
+
+/**
+ * 이벤트 대상 선택자를 받아서 기본 클릭 이벤트 리턴
+ * 클릭 시 table-info class를 남김
+ * @param selector
+ * @returns
+ */
+function fn_setClickEvent(selector, callback){
+	$(selector).click(fn_createBasicClickEvent(selector, callback));
+}
+
+function fn_createBasicClickEvent(selector, callback){
+	return function(){
+		$(selector).removeClass('table-info');
+		$(this).attr('class', 'table-info');
+		if ( typeof callback != 'undefined' )	callback(); 
+	};
+}
+
+
+/**
+ * 더블클릭 이벤트
+ */
+
+/**
+ * 더블클릭 공통 이벤트 
+ * 클릭 공통 이벤트를 콜백으로 호출해서 사용
+ * @param selector
+ * @param callback
+ * @returns
+ */
+function fn_setdblClickEvent(selector, callback){
+	$(selector).dblclick(fn_createBasicClickEvent(selector, callback));
+}
+
+/**
+ * onChange Event
+ * 온체인지 이벤트
+ */
+
+/**
+ * onChange 함수
+ * 부모 클래스 아래의 tag를 배열로 받아서 변경 이벤트 추가
+ * 변경 될 시 테이블 로우에 update 클래스를 남김
+ * @param className
+ * @param tagArr
+ * @param callback
+ * @returns
+ */
+function fn_setAddUpdateClass(className, tagArr, callback){
+	for (var i = 0; i < tagArr.length; i++) {
+		$(className + ' ' + tagArr[i]).change(fn_addUpdateClass(callback));
+	}
+}
+
+function fn_addUpdateClass(callback){
+	return function(){
+		let $tr = $(this).closest('tr');
+		$tr.addClass('update');
+		if ( callback !== undefined ) 	callback();
+	}
+}
+
+/**
+ * 체크박스 감지 함수 
+ * 체크박스 체크 시 테이블 로우에 checked 클래스를 남김
+ * @returns
+ */
+function fn_setCheckEvent(selector){
+	$(selector).change(fn_commonDetectingCheckBox);
+}
+
+
+function fn_commonDetectingCheckBox(){
+	let isChecked = $(this).is(':checked');
+	let $parent = $(this).closest('tr');
+	if ( isChecked ) {
+		$parent.removeClass('unchecked');
+		$parent.addClass('checked');
+	}
+	else {
+		$parent.removeClass('checked');
+		$parent.addClass('unchecked');
+	}
+}
+
+
+
+/**
+ * 공통 콜백
+ */
+
+/**
+ * 
+ * @param division
+ * @param callback
+ * @returns
+ */
+
+function fn_getCallback(division, callback){
+	let msg = '';
+	if ( division === 'delete' ) 		msg = '삭제되었습니다.';
+	else if ( division === 'insert' ) 	msg = '저장되었습니다.';
+	else if ( division === 'confirm' ) 	msg = '신청되었습니다.';
+	return function(data){
+		let retCode = data.retCode;
+		if ( retCode > 0 ) {
+			alert(msg);
+			if ( callback === undefined )	location.reload();
+			else							callback();
+		}
+	};
+}
+
+
+/**
+ * HTML 생성 함수
+ */
+
+/**
+ * 빈 로우 생성
+ * @param selector
+ * @param repeat
+ * @returns
+ */
+function fn_commonInsertRow(selector, repeat){
+	let rowCnt = $(selector + ' tbody tr').length;
+	let selectedCnt  = $(selector + ' .table-info').length;
+	let idx = selectedCnt < 1 ? rowCnt : rowCnt + selectedCnt; 
+	let html = '';
+	html += '<tr class="insertRow">';
+	html += '	<td>' + (idx++) + '</td>';
+	for (var i = 0; i < repeat; i++) {
+		html += '	<td></td>';
+	}
+	html += '	<input class="status" value="I">';
+	html += '</tr>';
+	selectedCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
+}
+
+
+/**
+ * 로우 생성 Elements를 테이블 로우 안에 삽입
+ * @param data
+ * @returns
+ */
+function fn_commonInsertRow_V2(selector, htmlList){
+	let rowCnt = $(selector + ' tbody tr').length;
+	let html = '';
+	html += '<tr class="insertRow">';
+	for (var i = 0; i < htmlList.length; i++) {
+		html += '<td>';
+		html += 	htmlList[i];
+		html += '</td>';
+	}
+	html += '</tr>';
+	rowCnt < 1 ? $(selector + ' tbody').html(html) : $(selector + ' tbody').append(html);
+}
+function fn_commonInsertCallback(data){
+	let retCode = data.retCode;
+	if ( retCode > 0 ) {
+		alert('저장되었습니다.');
+		location.reload();
+	}
+}
+
+
+
+/**
+ * 테이블 데이터 생성 Version2
+ * 
+ * @returns html
+ */
+function fn_makeTableRow_V2(data, properties){
+	let html = '<tr>';
+	properties.forEach(function(property){
+		html += '<td>' + fn_basicValidator(data[property]) + '</td>';
+	});
+	html += '</tr>';
+	return html;
+}
+
+
+/**
+ * 데이터 없을 시 데이터 없음 로우 생성 함수 
+ * @param colspan
+ * @returns
+ */
 function fn_createEmptyTableHtml(colspan){
 	let html = '';
 	if ( colspan > 0 ) {
@@ -429,23 +768,9 @@ function fn_commonCreateTableRow(selector, html){
 	$(selector + ' tbody').html(html);
 }
 
-function fn_switchElement(className, showTable){
-	let targetIdArray = fn_getIdListByClassName(className);
-	for (let i= 0;  i< targetIdArray.length;  i++) {
-		$('#' + targetIdArray[i]).css('display', 'none');
-	}
-	$('#' + showTable).css('display', '');
-}
 
 
-function fn_getIdListByClassName(className){
-	let array = new Array();
-	$('.' + className).each(function(){
-		array.push($(this).attr('id'));
-	});
-	console.log(array);
-	return array;
-}
+
 
 
 
@@ -453,91 +778,26 @@ function fn_getIdListByClassName(className){
 
 
 /**
- * 이벤트 대상 선택자를 받아서 기본 클릭 이벤트 리턴
- * 
+ * 공통 유틸 함수
  * @param selector
  * @returns
  */
-function fn_createBasicClickEvent(selector, callback){
-	return function(){
-		$(selector).removeClass('table-info');
-		$(this).attr('class', 'table-info');
-		if ( typeof callback != 'undefined' )	callback(); 
-	};
-}
 
-
-function fn_setClickEvent(selector, callback){
-	$(selector).click(fn_createBasicClickEvent(selector, callback));
-}
-
-function fn_setdblClickEvent(selector, callback){
-	$(selector).dblclick(fn_createBasicClickEvent(selector, callback));
-}
-
-function fn_setAddUpdateClass(className, tagArr, callback){
-	for (var i = 0; i < tagArr.length; i++) {
-		$(className + ' ' + tagArr[i]).change(fn_addUpdateClass(callback));
-	}
-}
-
-function fn_addUpdateClass(callback){
-	return function(){
-		let $tr = $(this).closest('tr');
-		$tr.addClass('update');
-		if ( callback !== undefined ) 	callback();
-	}
-}
-
+/**
+ * 선택자의 인덱스 반환
+ * @param selector
+ * @returns
+ */
 function fn_commonGetRowIndex(selector){
 	return $(selector).index();
 }
 
 
-function fn_setElementValue(selector, value){
-	let $selector = $(selector);
-	let tagName = $selector.prop('tagName');	// 태그이름은 prop
-	if ( 'INPUT' === tagName ) {
-		let type = $selector.attr('type');
-		if ( 'text' === type || 'hidden' === type) {
-			$selector.val(value);
-		}
-		else if ( 'radio' === type ) {
-			$(selector).each(function(){
-				if ( $(this).val() === value ) {
-					$(this).prop('checked', true);
-					return false;
-				}
-			});
-		}
-	}
-	else if ( 'TEXTAREA' === tagName ) {
-		$selector.val(value);
-	}
-	else if ( 'SELECT' === tagName ) {
-		$selector.val(value).attr('selected', true);
-	}
-	return ;
-}
-
-
-function fn_setCheckEvent(selector){
-	$(selector).change(fn_commonDetectingCheckBox);
-}
-
-function fn_commonDetectingCheckBox(){
-	let isChecked = $(this).is(':checked');
-	let $parent = $(this).closest('tr');
-	if ( isChecked ) {
-		$parent.removeClass('unchecked');
-		$parent.addClass('checked');
-	}
-	else {
-		$parent.removeClass('checked');
-		$parent.addClass('unchecked');
-	}
-}
-
+/**
+ * 공통 코드 파서
+ * @param code
+ * @returns
+ */
 
 function fn_commonCodeParser(code){
 	switch ( code ) {
@@ -554,6 +814,14 @@ function fn_commonCodeParser(code){
 	}
 }
 
+
+/**
+ * 다운로드
+ */
+
+/**
+ * 공통 모달 사용시(파일 다운로드 모달)
+ */
 
 /**
  * 공통 모달 사용시 공통 파일 다운로드 사용 시 파일 다운로드 함수 로우 안에 파일 이름, 파일 경로가 있을 시 사용 가능
@@ -592,8 +860,10 @@ function fn_commonDownload_v2(_this){
 }
 
 
+
 /**
- * 공통 파일 다운로드 함수
+ * 공통 모달 사용하지 않을 시,
+ * 파일 명과 파일 경로를 인자로 받아서 파일 다운로드 
  */
 function fn_commonFileDownload(name, path){
 	let form = document.createElement('form');
@@ -607,26 +877,7 @@ function fn_commonFileDownload(name, path){
 	form.submit();
 }
 
-
-function fn_createElement(tagName, type, value, name){
-	let element = document.createElement(tagName);
-	element.type = type;
-	element.value = value;
-	element.name = name;
-	return element;
-}
-
 /**
- * 파일 전송용 formData
- * 
- * @param formSelector
- * @param obj
- * @returns
+ * 파일 업로드
  */
-function fn_commonFileFormData(formSelector, obj){
-	let form = $(formSelector)[0];
-	let data = new FormData(form);
-	
-	for ( let property in obj) 	data.append(property, obj[property]);
-	return data;
-}
+
