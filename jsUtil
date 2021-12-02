@@ -3,7 +3,7 @@
  * 
  */
 
- let dataUtil = {
+let dataUtil = {
 	masterData : null,
 	detailData : null,
 	get getMasterData() { return dataUtil.masterData[$('#masterGrid tbody .table-info').index()]; },
@@ -32,10 +32,10 @@ const MASTER_TR = '#masterGrid tbody tr';
  * @param _async
  * @returns
  */
-function fn_ajaxPOST_stringify(url, data, callback, _async){
+function fn_ajaxStringify(url, data, callback, type, _async){
 	if ( _async === undefined ) _async = true;
 	$.ajax({
-	    type: "POST"
+	    type: type
 	   ,url: url
 	   ,data: JSON.stringify(data)
 	   ,async : _async
@@ -46,6 +46,23 @@ function fn_ajaxPOST_stringify(url, data, callback, _async){
 	   ,dataType:"json"
 	   ,error : function(x, e) { fn_ajaxError(x, e); }
 	});
+}
+
+function fn_commonAjax(url, data, callback, type, _async){
+	if ( _async === undefined ) _async = true;
+	$.ajax({
+	    type: type
+	   ,url: url
+	   ,data: $.param(data)
+	   ,async : _async
+	   ,beforeSend:function(){ $('.preloader').show(); }
+	   ,complete:function(){ $('.preloader').fadeOut(); }
+	   ,success: callback
+	   ,dataType:"json"
+	   ,error : function(x, e) { fn_ajaxError(x, e); }
+	});
+	
+	
 }
 
 
@@ -194,7 +211,12 @@ function fn_initializeTime(className, separator){
 	$('.' + className).mask('00' + separator + '00');
 }
 
-
+/**
+ * 시분 구분자 포맷
+ */
+function fn_initialize_mmss(value, separator){
+	return value.substring(0, 2) + separator + value.substring(2, 4);
+}
 
 
 /**
@@ -242,6 +264,7 @@ function fn_commonCheck(name, type, value){
 		else	$(this).prop('checked', false);
 	});
 }
+
 
 /**
  * 비어있는 경우 true Return
@@ -436,6 +459,23 @@ function fn_wrappingFormData($parent){
 
 
 /**
+ * 체크되어 있는지
+ */
+function fn_isChecked(selector){
+	let result = false;
+	$(selector).each(function(){
+		console.log($(this).is(':checked'));
+		if ( $(this).is(':checked') ) {
+			console.log('test');
+			result = true;
+			return false;
+		}
+	})
+	return result;
+}
+
+
+/**
  * 체크박스 리스트를 받아서 체크된 값의 리스트 반환
  * 
  * @returns
@@ -507,7 +547,13 @@ function fn_getIdListByClassName(className){
 
 
 
-
+/**
+ * 체크박스 전체선택제어 
+ */
+function fn_checkBoxAllSelector(selector, target){
+	let checked = $(selector).is(':checked');
+	$(target).prop('checked', checked);
+}
 
 
 
@@ -725,6 +771,25 @@ function fn_commonInsertCallback(data){
 	}
 }
 
+/**
+ * 새로고침 시 파라미터 전달 
+ * @param url
+ * @param param
+ * @returns
+ */
+function fn_commonHoldReload(url, param){
+	const count = Object.keys(param).length;
+	let index = 1;
+	return function(){
+		url += '?';
+		for ( let property in param) {
+			url += property + '=' + param[property];
+			if ( count !== index ) 	url += '&';
+			index++;
+		} 
+		location.href = url;
+	}
+}
 
 
 /**
