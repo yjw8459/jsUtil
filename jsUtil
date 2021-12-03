@@ -1,3 +1,15 @@
+
+//년도만 선택
+function fn_datepickerYYYY(selector){
+	$(selector).datepicker({
+	    format: "yyyy",
+	    viewMode: "years", 
+	    minViewMode: "years"
+	});
+}
+
+
+
 /**
  * 데이터 VO
  * 
@@ -13,6 +25,7 @@ let dataUtil = {
 		else						   this.masterData.push(v);
 	}
 };
+
 
 /**
  * 공통 선택자
