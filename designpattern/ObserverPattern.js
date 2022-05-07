@@ -1,3 +1,5 @@
+
+
 function Newsletter() {
     this.observers = [];
   }
@@ -27,3 +29,6 @@ function Newsletter() {
   
   newsletter.unsubscribe(subscriber2);
   newsletter.notify(); 
+
+  console.log(Newsletter);
+  console.log(Newsletter.prototype);
