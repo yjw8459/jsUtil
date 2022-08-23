@@ -18,9 +18,6 @@ promise = new Promise(function(resolve, reject) {
     //reject('에러 발생!');
 }).then( result => console.log(result) ).catch( error => console.log(error) );
 
-Promise.all().then(
-    () => console.log('then')
-)
 
 // 이행, 거절된 Promise는 처리된(Settled) Promise라고 부른다.
 // 또, 반대되는 Promise로 대기(pending) 상태의 Promise가 있다.
@@ -34,3 +31,9 @@ promise = new Promise(function(resolve, reject) {
     setTimeout(() => reject(new Error("에러 발생!")), 1000);
 });
 
+const promise1 = Promise.resolve(3);
+const promise2 = Promise.reject('Error');
+const promise3 = 99;
+const promise4 = 'test';
+
+Promise.all( [promise1, promise2, promise3, promise4] ).then( (value) => console.log(value) );
