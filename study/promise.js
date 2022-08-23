@@ -7,14 +7,25 @@ let promise = new Promise(function(resolve, reject){    // new Promise(executor)
     console.log('execute');
 });
 
+
 //이행
 // state: "fulfulled", result: "완료"
 promise = new Promise(function(resolve, reject) {
     // 프라미스가 만들어지면 executor 함수는 자동으로 실행됩니다.
   
     // 1초 뒤에 일이 성공적으로 끝났다는 신호가 전달되면서 result는 '완료'가 됩니다.
-    setTimeout(() => resolve("완료"), 1000);
-});
+    resolve("완료");
+    //reject('에러 발생!');
+}).then( result => console.log(result) ).catch( error => console.log(error) );
+
+Promise.all().then(
+    () => console.log('then')
+)
+
+// 이행, 거절된 Promise는 처리된(Settled) Promise라고 부른다.
+// 또, 반대되는 Promise로 대기(pending) 상태의 Promise가 있다.
+
+
 
 //거절
 // state: "rejected", result: Error 객체
@@ -22,8 +33,4 @@ promise = new Promise(function(resolve, reject) {
     // 1초 뒤에 에러와 함께 실행이 종료되었다는 신호를 보냅니다.
     setTimeout(() => reject(new Error("에러 발생!")), 1000);
 });
-
-
-// 이행, 거절된 Promise는 처리된(Settled) Promise라고 부른다.
-// 또, 반대되는 Promise로 대기(pending) 상태의 Promise가 있다.
 
