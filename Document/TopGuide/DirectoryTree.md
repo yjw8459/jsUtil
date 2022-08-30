@@ -42,13 +42,15 @@ mto-core
            │  CountryRepository.java
            │  CountryService.java
            │  CurrencyMapper.java
+           │  CurrencyRepository.java
            │
            ├─domain
            │      GetCountriesIn.java
            │      GetCountriesOut.java
            │      GetCurrenciesIn.java
            │      GetCurrenciesOut.java
-           │
+           │      SaveCountry.java
+           │      SaveCurrency.java
            └─entity
                    Country.java
                    Currency.java

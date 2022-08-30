@@ -110,10 +110,22 @@ object Option {
     type?: string
     checked?: boolean
 }
+
+object code.service.ts {
+    <<code>>
+    +get(databaseName: DatabaseName, groupCode: string): Option[]
+    +getCountry(databaseName: DatabaseName): Option[]
+}
+
+object CRUD {
+    name: string
+}
+
 App.vue --> Currencies.vue : Label 1
 App.vue --> Countries.vue : Label 2
 Currencies.vue --> Currency.vue
 Countries.vue --> Country.vue
+Country.vue --> CRUD
 code.service.ts --> Code
 code.service.ts --> Option
 @enduml
